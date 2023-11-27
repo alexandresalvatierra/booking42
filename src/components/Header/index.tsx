@@ -5,7 +5,7 @@ const Header = () => {
         Book an Property
       </span>
       <span className='block text-lg text-emerald-500'>
-        to go on vacation 😍
+        to go on vacation ✈️
       </span>
     </header>
   )
