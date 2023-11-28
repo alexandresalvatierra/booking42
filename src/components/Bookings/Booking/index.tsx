@@ -24,8 +24,11 @@ const Booking = ({ booking, onDelete, onUpdate }: BookingProps) => {
   return (
     <div className='mb-4 flex w-full flex-col justify-start gap-4 rounded-xl border border-emerald-900 p-4 shadow-xl md:flex-row'>
       <div className='relative'>
-        <img src={booking.property.image} className='h-36 w-52 rounded-xl' />
-        <span className='absolute bottom-2 right-2 rounded bg-stone-900/70 px-2 py-1 text-sm font-bold text-emerald-300'>
+        <img
+          src={booking.property.image}
+          className='h-36 w-full rounded-xl sm:w-52'
+        />
+        <span className='absolute bottom-2 left-2 right-auto rounded bg-stone-900/70 px-2 py-1 text-sm font-bold text-emerald-300 md:left-auto md:right-2'>
           $ {booking.property?.price}
         </span>
       </div>
@@ -49,7 +52,7 @@ const Booking = ({ booking, onDelete, onUpdate }: BookingProps) => {
           <span className='text-lg font-bold text-white'>{booking.name}</span>
         </span>
       </div>
-      <div className='ml-auto flex flex-col justify-center gap-4'>
+      <div className='flex flex-row justify-center gap-4 sm:ml-auto md:flex-col'>
         <button
           onClick={() => onUpdate(booking)}
           className='rounded border border-emerald-500 bg-emerald-500 px-4 py-2 text-white outline-none duration-300 hover:border-transparent hover:bg-emerald-700 focus:outline-none active:bg-emerald-800'
