@@ -7,16 +7,17 @@ import BookingActions from '../../redux/booking/actions'
 import BookingActionsTypes from '../../redux/booking/actions-types'
 import PropertyActions from '../../redux/property/actions'
 import PropertyActionsTypes from '../../redux/property/actions-types'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import BookingContext from '../../contexts/BookingContext'
 import { v4 as uuidv4 } from 'uuid'
 import 'react-toastify/dist/ReactToastify.css'
 import BookingCreate from '../Bookings/BookingCreate'
 import { checkDateInRange, convertDateToUTC } from '../../utils/'
+import BookingUpdate from './BookingUpdate'
 
 const Bookings = () => {
   const dispatch = useDispatch()
-  const { bookings } = useSelector(
+  const { bookings, bookingSelected } = useSelector(
     (rootReducer: RootReducer) => rootReducer.bookingReducer
   )
   const { propertySelected } = useSelector(
@@ -24,6 +25,7 @@ const Bookings = () => {
   )
   const { name, setName, checkIn, setCheckIn, checkOut, setCheckOut } =
     useContext(BookingContext)
+  const [isUpdate, setIsUpdate] = useState(false)
 
   const handleCancelBook = () => {
     setName('')
@@ -32,9 +34,10 @@ const Bookings = () => {
     tomorrow.setDate(today.getDate() + 1)
     setCheckIn(today)
     setCheckOut(tomorrow)
+    setIsUpdate(false)
 
     const action: PropertyActions = {
-      type: PropertyActionsTypes.SELECTED_PROPERTY,
+      type: PropertyActionsTypes.SELECT_PROPERTY,
       payload: null,
     }
     dispatch(action)
@@ -78,6 +81,49 @@ const Bookings = () => {
     toast.success('Booking successfully deleted')
   }
 
+  const handleShowUpdateBook = (booking: Booking) => {
+    setIsUpdate(true)
+    const actionBooking: BookingActions = {
+      type: BookingActionsTypes.SELECT_BOOKING,
+      payload: booking,
+    }
+    const actionProperty: PropertyActions = {
+      type: PropertyActionsTypes.SELECT_PROPERTY,
+      payload: booking.property,
+    }
+    dispatch(actionProperty)
+    dispatch(actionBooking)
+  }
+
+  const handleUpdateBook = () => {
+    if (name.trim() === '') {
+      toast.warn('Please fill your name')
+      return false
+    }
+
+    if (checkIsDateAlreadyBooked(checkIn, bookingSelected!.id, bookings)) {
+      toast.warn('This date rage is already booked for this place')
+      return false
+    } else {
+      const booking = {
+        id: bookingSelected?.id,
+        name,
+        checkIn: convertDateToUTC(checkIn),
+        checkOut: convertDateToUTC(checkOut),
+        property: bookingSelected!.property,
+      }
+
+      const action: BookingActions = {
+        type: BookingActionsTypes.UPDATE_BOOKING,
+        payload: booking as Booking,
+      }
+      dispatch(action)
+
+      toast.success('Booking successfully updated')
+      handleCancelBook()
+    }
+  }
+
   const checkIsDateAlreadyBooked = (
     checkIn: Date,
     idProperty: string,
@@ -111,6 +157,7 @@ const Bookings = () => {
               key={booking.id}
               booking={booking}
               onDelete={handleDeleteBook}
+              onUpdate={handleShowUpdateBook}
             />
           ))}
         </section>
@@ -118,14 +165,26 @@ const Bookings = () => {
       {propertySelected && (
         <Modal.Root onClickOutside={handleCancelBook}>
           <Modal.Header
-            title={'Booking: ' + propertySelected.title}
+            title={
+              !isUpdate
+                ? 'New Booking: '
+                : 'Update Booking: ' + propertySelected.title
+            }
             onClickClose={handleCancelBook}
           />
           <Modal.Content>
-            <BookingCreate
-              property={propertySelected}
-              onSubmit={handleSubmitBook}
-            />
+            {!isUpdate && (
+              <BookingCreate
+                property={propertySelected}
+                onSubmit={handleSubmitBook}
+              />
+            )}
+            {isUpdate && (
+              <BookingUpdate
+                booking={bookingSelected!}
+                onSubmit={handleUpdateBook}
+              />
+            )}
           </Modal.Content>
           <Modal.Footer>
             <Modal.FooterContent>
@@ -138,7 +197,10 @@ const Bookings = () => {
               onClick={handleCancelBook}
               className='bg-transparent text-emerald-500 hover:bg-emerald-500 hover:text-white'
             />
-            <Modal.FooterAction text='Book' onClick={handleSubmitBook} />
+            <Modal.FooterAction
+              text='Book'
+              onClick={!isUpdate ? handleSubmitBook : handleUpdateBook}
+            />
           </Modal.Footer>
         </Modal.Root>
       )}
