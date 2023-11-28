@@ -1,5 +1,15 @@
 export const convertDateToUTC = (date: Date): Date => {
-  return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+  const localHours = date.getHours()
+  const localMinutes = date.getMinutes()
+  const localSeconds = date.getSeconds()
+  const localMilliseconds = date.getMilliseconds()
+
+  date.setUTCHours(localHours)
+  date.setUTCMinutes(localMinutes)
+  date.setUTCSeconds(localSeconds)
+  date.setUTCMilliseconds(localMilliseconds)
+
+  return date
 }
 
 export const checkDateInRange = (
