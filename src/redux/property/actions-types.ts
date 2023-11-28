@@ -1,5 +1,5 @@
 enum PropertyActionsTypes {
-  SELECTED_PROPERTY = 'property/selected',
+  SELECT_PROPERTY = 'property/select',
 }
 
 export default PropertyActionsTypes

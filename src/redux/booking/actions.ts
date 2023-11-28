@@ -15,6 +15,15 @@ export type DeleteBooking = {
   payload: string
 }
 
-type BookingActions = CreateBooking | UpdateBooking | DeleteBooking
+export type SelectBooking = {
+  type: BookingActionsTypes.SELECT_BOOKING
+  payload: Booking | null
+}
+
+type BookingActions =
+  | CreateBooking
+  | UpdateBooking
+  | DeleteBooking
+  | SelectBooking
 
 export default BookingActions

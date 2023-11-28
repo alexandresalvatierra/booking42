@@ -12,7 +12,7 @@ const Properties = () => {
 
   const handleClickProperty = (property: Property) => {
     const action: PropertyActions = {
-      type: PropertyActionsTypes.SELECTED_PROPERTY,
+      type: PropertyActionsTypes.SELECT_PROPERTY,
       payload: property,
     }
     dispatch(action)

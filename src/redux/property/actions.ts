@@ -1,7 +1,7 @@
 import PropertyActionsTypes from './actions-types'
 
 export type SelectProperty = {
-  type: PropertyActionsTypes.SELECTED_PROPERTY
+  type: PropertyActionsTypes.SELECT_PROPERTY
   payload: Property | null
 }
 

@@ -41,7 +41,7 @@ const initialState: PropertyState = {
 
 const propertyReducer = (state = initialState, action: PropertyActions) => {
   switch (action.type) {
-    case PropertyActionsTypes.SELECTED_PROPERTY:
+    case PropertyActionsTypes.SELECT_PROPERTY:
       state.propertySelected = action.payload
       return { ...state, payload: action.payload }
     default:

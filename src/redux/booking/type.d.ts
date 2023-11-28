@@ -16,4 +16,5 @@ type Booking = {
 
 type BookingState = {
   bookings: Booking[] | []
+  bookingSelected: null | Booking
 }
